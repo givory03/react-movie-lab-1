@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";  // Import React hooks
+import React from "react";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
@@ -9,7 +9,7 @@ import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import img from "../../images/pexels-dziana-hasanbekava-5480827.jpg"; // Correct path to the image
+import img from "../../images/pexels-dziana-hasanbekava-5480827.jpg";  // Ensure the correct image path
 
 const formControl = {
   margin: 1,
@@ -18,37 +18,14 @@ const formControl = {
 };
 
 const FilterCard = (props) => {
-  const [genres, setGenres] = useState([{ id: "0", name: "All" }]); // Start with "All" option
+  const genres = [
+    { id: "0", name: "All" },
+    ...props.genres  // Add dynamically fetched genres
+  ];
 
-  // Fetch genres from the TMDB API
-  useEffect(() => {
-    fetch(
-      "https://api.themoviedb.org/3/genre/movie/list?api_key=" + import.meta.env.VITE_TMDB_KEY
-    )
-      .then((res) => res.json())
-      .then((json) => {
-        // Merge the "All" option with the genres returned from the API
-        setGenres([{ id: "0", name: "All" }, ...json.genres]);
-      });
-  }, []); // Empty dependency array ensures this runs only once when the component mounts
-
-  // Event handlers for handling changes in the input and dropdown
   const handleChange = (e, type, value) => {
     e.preventDefault();
-    // Handle changes for search text and genre filter
-    if (type === "name") {
-      props.onTitleFilterChange(value);
-    } else if (type === "genre") {
-      props.onGenreFilterChange(value);
-    }
-  };
-
-  const handleTextChange = (e) => {
-    handleChange(e, "name", e.target.value);
-  };
-
-  const handleGenreChange = (e) => {
-    handleChange(e, "genre", e.target.value);
+    props.onUserInput(type, value);  // Call the parent's handleChange function
   };
 
   return (
@@ -57,7 +34,6 @@ const FilterCard = (props) => {
         <Typography variant="h5" component="h1">
           <SearchIcon fontSize="large" /> Filter the movies.
         </Typography>
-        {/* Text input for the search field */}
         <TextField
           sx={{ ...formControl }}
           id="filled-search"
@@ -65,9 +41,8 @@ const FilterCard = (props) => {
           type="search"
           variant="filled"
           value={props.titleFilter}
-          onChange={handleTextChange} // Handle change for text
+          onChange={(e) => handleChange(e, "name", e.target.value)}  // Handle title filter change
         />
-        {/* Genre dropdown */}
         <FormControl sx={{ ...formControl }}>
           <InputLabel id="genre-label">Genre</InputLabel>
           <Select
@@ -75,7 +50,7 @@ const FilterCard = (props) => {
             id="genre-select"
             defaultValue=""
             value={props.genreFilter}
-            onChange={handleGenreChange} // Handle genre change
+            onChange={(e) => handleChange(e, "genre", e.target.value)}  // Handle genre filter change
           >
             {genres.map((genre) => (
               <MenuItem key={genre.id} value={genre.id}>
@@ -91,3 +66,4 @@ const FilterCard = (props) => {
 };
 
 export default FilterCard;
+
