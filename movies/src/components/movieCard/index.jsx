@@ -10,14 +10,20 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import CalendarIcon from "@mui/icons-material/CalendarTodayTwoTone";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import IconButton from "@mui/material/IconButton";
-import Grid from "@mui/material/Grid2";
-import img from '../../images/film-poster-placeholder.png'
+import Grid from "@mui/material/Grid";  // Use this if Unstable_Grid2 isn't working
+import img from "../../images/film-poster-placeholder.png";
 
 export default function MovieCard(props) {
   const movie = props.movie;
+
+  if (!movie) return null; // Prevents crashing if the movie object is missing
+
   return (
     <Card>
-      <CardHeader title={movie.title} sx={{ textWrap: "nowrap"}}/>
+      <CardHeader 
+        title={movie.title} 
+        sx={{ textWrap: "nowrap" }}
+      />
       <CardMedia
         sx={{ height: 500 }}
         image={
@@ -27,17 +33,15 @@ export default function MovieCard(props) {
         }
       />
       <CardContent>
-        <Grid container>
-          <Grid size={{xs: 6}}>
+        <Grid container spacing={1}>
+          <Grid item xs={6}>
             <Typography variant="h6" component="p">
-              <CalendarIcon fontSize="small" />
-              {movie.release_date}
+              <CalendarIcon fontSize="small" /> {movie.release_date}
             </Typography>
           </Grid>
-          <Grid size={{xs: 6}}>
+          <Grid item xs={6}>
             <Typography variant="h6" component="p">
-              <StarRateIcon fontSize="small" />
-              {"  "} {movie.vote_average}{" "}
+              <StarRateIcon fontSize="small" /> {movie.vote_average}
             </Typography>
           </Grid>
         </Grid>
@@ -53,3 +57,6 @@ export default function MovieCard(props) {
     </Card>
   );
 }
+
+
+
