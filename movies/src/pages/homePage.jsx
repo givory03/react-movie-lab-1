@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import MovieList from "../components/movieList";
-import { Grid } from "@mui/material";
-console.log("API Key:", import.meta.env.VITE_TMDB_KEY);
+import Grid from "@mui/material/Grid";
+import Header from "../components/headerMovieList";
+import FilterCard from "../components/filterMoviesCard";
 
 
 const HomePage = () => {
@@ -9,8 +10,6 @@ const HomePage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log("API Key:", import.meta.env.VITE_TMDB_KEY);  // Log the API key to confirm it's working
-
     const fetchMovies = async () => {
       try {
         const response = await fetch(
@@ -22,32 +21,38 @@ const HomePage = () => {
         }
 
         const json = await response.json();
-        console.log("Fetched Movies: ", json.results);  // Log fetched movies
+        console.log("Fetched Movies: ", json.results);
         setMovies(json.results);
-      } catch (error) {
-        console.error("Error fetching movies:", error);
-        setError(error.message);
+      } catch (err) {
+        console.error("Error fetching movies: ", err);
+        setError(err.message);
       }
     };
 
     fetchMovies();
   }, []);
 
-  if (error) return <div>Error: {error}</div>;  // Display error message if something went wrong
+  console.log("Movies Array: ", movies);  // Debugging line
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <Grid container>
       <Grid item xs={12}>
-        <h1>Home Page</h1>
-        {movies.length > 0 ? (
-          <MovieList movies={movies} />
-        ) : (
-          <p>Loading movies...</p>
-        )}
+        <Header title={"Home Page"} />
+      </Grid>
+      <Grid container sx={{ flex: "1 1 500px" }}>
+        <Grid item xs={12} sm={6} md={4} lg={3} xl={2} sx={{ padding: "20px" }}>
+          <FilterCard />
+        </Grid>
+        <MovieList movies={movies} />
       </Grid>
     </Grid>
   );
 };
 
 export default HomePage;
+
 
